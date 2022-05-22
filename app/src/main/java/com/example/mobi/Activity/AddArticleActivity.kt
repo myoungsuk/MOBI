@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.mobi.ArticleModel
 import com.example.mobi.DBkey.Companion.DB_ARTICLES
-import com.example.mobi.DBkey.Companion.TWO
 import com.example.mobi.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -81,18 +80,18 @@ class AddArticleActivity : AppCompatActivity() {
             showProgress()
 
             // 중간에 이미지가 있으면 업로드 과정을 추가
-            if (selectedUri != null) {
+            if (selectedUri != null) { //비동기일때도 함수실행
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
-                    successHandler = { uri ->
+                    successHandler = { uri -> //성공했을때 데이터 이동
                         uploadArticle(sellerId, title, price, uri)
                     },
                     errorHandler = {
                         Toast.makeText(this, "사진 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                        hideProgress()
+                        hideProgress() //프로그래스 화면 없애기
                     }
                 )
-            } else {
+            } else { //동기일때도 함수 실행
                 uploadArticle(sellerId, title, price, "")
             }
         }
@@ -101,10 +100,10 @@ class AddArticleActivity : AppCompatActivity() {
 
 
     private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
-        val fileName = "${System.currentTimeMillis()}.png"
-        storage.reference.child("article/photo").child(fileName)
-            .putFile(uri)
-            .addOnCompleteListener {
+        val fileName = "${System.currentTimeMillis()}.png" //파일 이름 설정
+        storage.reference.child("article/photo").child(fileName) // 파일 저장소 설정
+            .putFile(uri) //파일 넣기
+            .addOnCompleteListener { //리스너로 성공했는지 안했는지 확인
                 if (it.isSuccessful) {
                     storage.reference.child("article/photo").child(fileName)
                         .downloadUrl
@@ -119,7 +118,7 @@ class AddArticleActivity : AppCompatActivity() {
             }
     }
 
-
+    //아티클 업로드 함수
     private fun uploadArticle(sellerId: String, title: String, price: String, imageUrl: String) {
         val model = ArticleModel(sellerId, title, System.currentTimeMillis(), "$price", imageUrl)
         articleDB.push().setValue(model)
@@ -169,7 +168,7 @@ class AddArticleActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         //result.getResultCode()를 통하여 결과값 확인
-        if (it.resultCode == TWO) { //2020포트
+        if (it.resultCode == RESULT_OK) { //2020포트
             //ToDo
             val uri = it.data?.data
             if (uri != null) {
