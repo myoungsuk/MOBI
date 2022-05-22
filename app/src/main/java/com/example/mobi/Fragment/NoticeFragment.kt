@@ -50,9 +50,7 @@ class NoticeFragment : Fragment(R.layout.fragment_notice) {
 
         }
 
-        override fun onCancelled(error: DatabaseError) {
-
-        }
+        override fun onCancelled(error: DatabaseError) {}
 
     }
 
@@ -68,8 +66,9 @@ class NoticeFragment : Fragment(R.layout.fragment_notice) {
         val fragmentNoticeBinding = FragmentNoticeBinding.bind(view)
         binding = fragmentNoticeBinding
 
-        articleDB = Firebase.database.reference.child(DB_ARTICLES) //아티클DB firebase 데이터베이스 선언
+        articleList.clear() // 화면 옮기면 두번 출력되는거 방지
 
+        articleDB = Firebase.database.reference.child(DB_ARTICLES) //아티클DB firebase 데이터베이스 선언
         articleAdapter = ArticleAdapter() //아티클 어댑터 호출
 
         articleDB.addChildEventListener(listener) //아티클 데이터 이벤트 리스너에 추가
@@ -92,8 +91,14 @@ class NoticeFragment : Fragment(R.layout.fragment_notice) {
 
             }
         }
+       // articleDB.addChildEventListener(listener)
 
+    }
+    //  게시글 올렸을때 데이터 변환을 알고 새로고침해줌
+    override fun onResume() {
+        super.onResume()
 
+        articleAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {

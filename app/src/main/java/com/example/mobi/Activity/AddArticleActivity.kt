@@ -4,23 +4,27 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.mobi.ArticleModel
+import com.example.mobi.Constant.Companion.TWO
+import com.example.mobi.DBkey.Companion.DB_ARTICLES
 import com.example.mobi.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
 
 class AddArticleActivity : AppCompatActivity() {
@@ -29,7 +33,14 @@ class AddArticleActivity : AppCompatActivity() {
     private val auth: FirebaseAuth by lazy {
         Firebase.auth
     }                                   //firebase 호출
-    
+
+    private val storage: FirebaseStorage by lazy {
+        Firebase.storage
+    }
+
+    private val articleDB: DatabaseReference by lazy {
+        Firebase.database.reference.child(DB_ARTICLES)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +61,7 @@ class AddArticleActivity : AppCompatActivity() {
                     android.Manifest.permission
                         .READ_EXTERNAL_STORAGE
                 ) -> {
-                    showPermissonContextPopup()
+                    showPermissionContextPopup()
                 }
                 else -> {
                     //그외에 경우에는 해당권한에 대해서 요청하는 코드
@@ -61,9 +72,34 @@ class AddArticleActivity : AppCompatActivity() {
                 }
 
             }
-
         }
+        findViewById<Button>(R.id.submitButton).setOnClickListener {
+            val title = findViewById<EditText>(R.id.titleEditText).text.toString()
+            val price = findViewById<EditText>(R.id.priceEditText).text.toString()
+            val sellerId = auth.currentUser?.uid.orEmpty()
+
+            showProgress()
+
+            // 중간에 이미지가 있으면 업로드 과정을 추가
+            if (selectedUri != null) {
+                val photoUri = selectedUri ?: return@setOnClickListener
+                uploadPhoto(photoUri,
+                    successHandler = { uri ->
+                        uploadArticle(sellerId, title, price, uri)
+                    },
+                    errorHandler = {
+                        Toast.makeText(this, "사진 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        hideProgress()
+                    }
+                )
+            } else {
+                uploadArticle(sellerId, title, price, "")
+            }
+        }
+
     }
+
+
     private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
         val fileName = "${System.currentTimeMillis()}.png"
         storage.reference.child("article/photo").child(fileName)
@@ -83,13 +119,18 @@ class AddArticleActivity : AppCompatActivity() {
             }
     }
 
+
     private fun uploadArticle(sellerId: String, title: String, price: String, imageUrl: String) {
-        val model = ArticleModel(sellerId, title, System.currentTimeMillis(), "$price 원", imageUrl)
+        val model = ArticleModel(sellerId, title, System.currentTimeMillis(), "$price", imageUrl)
         articleDB.push().setValue(model)
 
         hideProgress()
+
         finish()
+
+
     }
+    
     //퍼미션 요청에 대한 함수 오버라이드
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -99,7 +140,7 @@ class AddArticleActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            1010 ->
+            1010 -> //승낙이 됬는지 확인한다
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startContentProvider()
                 } else {
@@ -110,8 +151,8 @@ class AddArticleActivity : AppCompatActivity() {
 
     private fun startContentProvider() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        activityResultLauncher.launch(intent);
+        intent.type = "image/*" //이미지 타입만 가져오도록
+        activityResultLauncher.launch(intent)
 
     }
 
@@ -123,22 +164,21 @@ class AddArticleActivity : AppCompatActivity() {
         findViewById<ProgressBar>(R.id.progressBar).isVisible = false
     }
 
-    //activityresultlauncher 처리하기 위한 변수설정
+    //activityresultlauncher 처리하기 위한 설정
     private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
         //result.getResultCode()를 통하여 결과값 확인
-        if (it.resultCode == RESULT_OK) {
+        if (it.resultCode == TWO) { //2020포트
             //ToDo
-            val uri = it.data
+            val uri = it.data?.data
             if (uri != null) {
                 findViewById<ImageView>(R.id.photoImageView).setImageURI(uri)
                 selectedUri = uri
             } else {
                 Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
             }
-        }
-        else{
+        } else {
             Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
         }
         if (it.resultCode == RESULT_CANCELED) {
@@ -147,6 +187,7 @@ class AddArticleActivity : AppCompatActivity() {
         }
     }
 
+    //교육용 팝업 함수
     private fun showPermissionContextPopup() {
         AlertDialog.Builder(this)
             .setTitle("권한이 필요합니다.")
