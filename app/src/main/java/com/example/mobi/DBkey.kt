@@ -4,5 +4,7 @@ class DBkey
 {
     companion object{
         const val DB_ARTICLES = "Articles"
+
+        const val TWO = 2020
     }
 }

@@ -15,8 +15,8 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.mobi.ArticleModel
-import com.example.mobi.Constant.Companion.TWO
 import com.example.mobi.DBkey.Companion.DB_ARTICLES
+import com.example.mobi.DBkey.Companion.TWO
 import com.example.mobi.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
