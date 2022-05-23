@@ -168,7 +168,7 @@ class AddArticleActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         //result.getResultCode()를 통하여 결과값 확인
-        if (it.resultCode == RESULT_OK) { //2020포트
+        if (it.resultCode == RESULT_OK) {
             //ToDo
             val uri = it.data?.data
             if (uri != null) {
