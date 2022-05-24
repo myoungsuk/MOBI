@@ -3,15 +3,15 @@ package com.example.mobi.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.example.mobi.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.view_loader.*
 
 class LoginActivity : AppCompatActivity()
 {
@@ -54,12 +54,11 @@ class LoginActivity : AppCompatActivity()
             //firebase 리스너 호출
             if (email.isNotEmpty() && password.isNotEmpty())
             {
-                val loaderLayout = findViewById<RelativeLayout>(R.id.loaderLayout)
-                loaderLayout.visibility = View.VISIBLE
+                showProgress()
 
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
-                        loaderLayout.visibility = View.GONE
+                        hideProgress()
                         if (task.isSuccessful)
                         {
 
@@ -87,6 +86,14 @@ class LoginActivity : AppCompatActivity()
             }
 
         }
+    }
+
+    private fun showProgress() {
+        findViewById<ProgressBar>(R.id.progressBar)?.isVisible = true
+    }
+
+    private fun hideProgress() {
+        findViewById<ProgressBar>(R.id.progressBar)?.isVisible = false
     }
 
     // 액티비티 이동

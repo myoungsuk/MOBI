@@ -23,7 +23,7 @@ class ArticleAdapter : ListAdapter<ArticleModel, ArticleAdapter.ViewHolder>(diff
 
             binding.titleTextView.text = articleModel.title
             binding.dateTextView.text = format.format(date).toString()
-            binding.priceTextView.text = articleModel.price
+            binding.priceTextView.text = articleModel.contents
 
             if (articleModel.imageUrl.isNotEmpty()) {
                 Glide.with(binding.thumbnailImageView)

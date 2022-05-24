@@ -20,5 +20,17 @@ class SettingFragment : Fragment(R.layout.fragment_setting)
     {
         super.onViewCreated(view, savedInstanceState)
 
+
+        //fragment 로그아웃 구현
+
+//        fragment 로그아웃 구현
+//        findViewById<View>(R.id.btn_logout).setOnClickListener { // 로그아웃 하기
+//            val intent = Intent(activity, LoginActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//            FirebaseAuth.signOut()
+//       } //로그아웃하기 끝
+
+
     }
 }

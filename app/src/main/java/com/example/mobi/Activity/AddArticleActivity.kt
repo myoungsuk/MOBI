@@ -5,13 +5,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.widget.*
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.mobi.ArticleModel
@@ -74,7 +71,7 @@ class AddArticleActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.submitButton).setOnClickListener {
             val title = findViewById<EditText>(R.id.titleEditText).text.toString()
-            val price = findViewById<EditText>(R.id.priceEditText).text.toString()
+            val contents = findViewById<EditText>(R.id.contentsEditText).text.toString()
             val sellerId = auth.currentUser?.uid.orEmpty()
 
             showProgress()
@@ -84,7 +81,7 @@ class AddArticleActivity : AppCompatActivity() {
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
                     successHandler = { uri -> //성공했을때 데이터 이동
-                        uploadArticle(sellerId, title, price, uri)
+                        uploadArticle(sellerId, title, contents, uri)
                     },
                     errorHandler = {
                         Toast.makeText(this, "사진 업로드에 실패했습니다.", Toast.LENGTH_SHORT).show()
@@ -92,7 +89,7 @@ class AddArticleActivity : AppCompatActivity() {
                     }
                 )
             } else { //동기일때도 함수 실행
-                uploadArticle(sellerId, title, price, "")
+                uploadArticle(sellerId, title, contents, "")
             }
         }
 
@@ -119,8 +116,8 @@ class AddArticleActivity : AppCompatActivity() {
     }
 
     //아티클 업로드 함수
-    private fun uploadArticle(sellerId: String, title: String, price: String, imageUrl: String) {
-        val model = ArticleModel(sellerId, title, System.currentTimeMillis(), "$price", imageUrl)
+    private fun uploadArticle(sellerId: String, title: String, contents: String, imageUrl: String) {
+        val model = ArticleModel(sellerId, title, System.currentTimeMillis(), contents, imageUrl)
         articleDB.push().setValue(model)
 
         hideProgress()
