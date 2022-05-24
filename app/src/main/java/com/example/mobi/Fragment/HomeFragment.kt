@@ -1,6 +1,5 @@
 package com.example.mobi.Fragment
 
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,23 +14,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.mobi.Activity.AddArticleActivity
-import com.example.mobi.DBkey
 import com.example.mobi.Friend
 import com.example.mobi.R
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -44,8 +35,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         private val fireDatabase = FirebaseDatabase.getInstance().reference
         private val user = Firebase.auth.currentUser
         private val uid = user?.uid.toString()
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
+        fun newInstance(): ChatFragment {
+            return ChatFragment()
         }
     }
     val photo = view?.findViewById<ImageView>(R.id.profile_imageview)
