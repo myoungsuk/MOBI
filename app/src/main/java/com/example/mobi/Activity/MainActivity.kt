@@ -4,12 +4,21 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.mobi.Fragment.HomeFragment
-import com.example.mobi.Fragment.NoticeFragment
-import com.example.mobi.Fragment.SettingFragment
+import com.example.mobi.Fragment.*
 import com.example.mobi.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
+private lateinit var auth: FirebaseAuth
+
+var homeFragment = HomeFragment()
+val noticeFragment = NoticeFragment()
+val settingsFragment = SettingFragment()
+val friendFragment = FriendFragment()
+val chatFragment = ChatFragment()
 
 class MainActivity : AppCompatActivity()
 {
@@ -18,10 +27,8 @@ class MainActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        auth = Firebase.auth
 
-        val homeFragment = HomeFragment()
-        val noticeFragment = NoticeFragment()
-        val settingsFragment = SettingFragment()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
@@ -29,12 +36,16 @@ class MainActivity : AppCompatActivity()
 
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
+                R.id.friend -> replaceFragment(friendFragment)
+                R.id.chat -> replaceFragment(chatFragment)
                 R.id.home -> replaceFragment(homeFragment)
                 R.id.notice -> replaceFragment(noticeFragment)
                 R.id.settings -> replaceFragment(settingsFragment)
             }
             true
         }
+
+
     }
 
     private fun replaceFragment(fragment: Fragment)

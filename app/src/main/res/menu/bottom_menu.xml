@@ -10,6 +10,21 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/friend"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_people_24"
+        android:title="친구"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/chat"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_chat_24"
+        android:title="채팅"
+        app:showAsAction="always" />
+
+
+    <item
         android:id="@+id/notice"
         android:enabled="true"
         android:icon="@drawable/ic_notice"

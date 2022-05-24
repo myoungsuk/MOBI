@@ -51,10 +51,11 @@ class LoginActivity : AppCompatActivity()
             val email = (findViewById<View>(R.id.emailEditText) as EditText).text.toString()
             val password = (findViewById<View>(R.id.passwordEditText) as EditText).text.toString()
 
+            showProgress()
             //firebase 리스너 호출
             if (email.isNotEmpty() && password.isNotEmpty())
             {
-                showProgress()
+
 
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
@@ -66,23 +67,30 @@ class LoginActivity : AppCompatActivity()
                                 this,
                                 "로그인에 성공하셨습니다", Toast.LENGTH_SHORT
                             ).show()
+                            hideProgress()
                             myStartActivity(MainActivity::class.java)
                         } else
                         {
+
                             Toast.makeText(
                                 this,
                                 "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해 주세요", Toast.LENGTH_SHORT
                             ).show()
+
+                            hideProgress()
                         }
 
 
                     }
             } else
             {
+
                 Toast.makeText(
                     this,
                     "이메일 또는 비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT
                 ).show()
+
+                hideProgress()
             }
 
         }

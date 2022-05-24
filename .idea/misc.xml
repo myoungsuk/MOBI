@@ -16,21 +16,23 @@
         <entry key="app/src/main/res/drawable/photoedit.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/selector_menu_color.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/seletor_menu_color.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_add_article.xml" value="0.28266754150390627" />
+        <entry key="app/src/main/res/layout/activity_add_article.xml" value="0.11596221923828126" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.14661102294921877" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_password_reset.xml" value="0.30829772949218753" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.23744964599609378" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.16018518518518518" />
+        <entry key="app/src/main/res/layout/activity_splash2.xml" value="0.16018518518518518" />
         <entry key="app/src/main/res/layout/activity_user_init.xml" value="0.29288940429687504" />
         <entry key="app/src/main/res/layout/activity_write_post.xml" value="0.10063781738281251" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.20982208251953124" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.17725982666015624" />
         <entry key="app/src/main/res/layout/fragment_home2.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_notice.xml" value="0.2902542114257813" />
         <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.22652282714843752" />
         <entry key="app/src/main/res/layout/item_article.xml" value="0.23080223931206595" />
         <entry key="app/src/main/res/layout/testcode.xml" value="0.16428527832031253" />
         <entry key="app/src/main/res/layout/view_loader.xml" value="0.1" />
-        <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.20858001708984375" />
         <entry key="app/src/main/res/menu/post.xml" value="0.1" />
       </map>
     </option>

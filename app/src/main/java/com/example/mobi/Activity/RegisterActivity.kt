@@ -7,16 +7,13 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mobi.Friend
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.isVisible
 import com.example.mobi.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -82,14 +79,20 @@ class RegisterActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
 
         button.setOnClickListener {
+
+            showProgress()
+
             if(email.isEmpty() && password.isEmpty() && name.isEmpty() && profileCheck)  {
                 Toast.makeText(this, "아이디와 비밀번호, 프로필 사진을 제대로 입력해주세요.", Toast.LENGTH_SHORT).show()
                 Log.d("Email", "$email, $password")
+
+                hideProgress()
             }
 
             else{
                 if(!profileCheck){
                     Toast.makeText(this, "프로필사진을 등록해주세요.", Toast.LENGTH_SHORT).show()
+                    hideProgress()
                 } else{
                     auth.createUserWithEmailAndPassword(email.toString(), password.toString())
                         .addOnCompleteListener(this) { task ->
@@ -110,10 +113,12 @@ class RegisterActivity : AppCompatActivity() {
                                             }
                                     }
                                 Toast.makeText(this, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                hideProgress()
                                 Log.e(TAG, "$userId")
                                 startActivity(intent)
                             } else {
                                 Toast.makeText(this, "등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                hideProgress()
                             }
                         }
                 }
@@ -125,84 +130,7 @@ class RegisterActivity : AppCompatActivity() {
             R.id.gotoLoginButton -> myStartActivity(LoginActivity::class.java)
         }
     }
-//        findViewById<View>(R.id.signUpButton).setOnClickListener(onClickListener)
-//        findViewById<View>(R.id.gotoLoginButton).setOnClickListener(onClickListener)
 
-//        initSignUpButton()
-//    }
-
-//    private var onClickListener = View.OnClickListener { v ->
-//        when (v.id) {
-//            R.id.signUpButton -> initSignUpButton()
-//            R.id.gotoLoginButton -> myStartActivity(LoginActivity::class.java)
-//        }
-//    }
-
-    //회원가입 버튼 함수
-//    private fun initSignUpButton() {
-//        val signUpButton = findViewById<Button>(R.id.signUpButton)
-//        signUpButton.setOnClickListener {
-//
-//            val email = getInputEmail()
-//            val password = getInputPassword()
-//            val passwordCheck = getPasswordCheck()
-//            val name = findViewById<EditText>(R.id.et_registration_name).text
-//            var profileCheck = false
-//
-//            if (email.isNotEmpty() && password.isNotEmpty() && passwordCheck.isNotEmpty() &&
-//                name.isEmpty() && profileCheck
-//            ) {
-//                Toast.makeText(this, "아이디와 비밀번호, 프로필 사진을 제대로 입력해주세요.", Toast.LENGTH_SHORT)
-//                    .show()
-//                Log.d("Email", "$email, $password")
-//            } else {
-//                if (!profileCheck) {
-//                    Toast.makeText(this, "프로필사진을 등록해주세요.", Toast.LENGTH_SHORT).show()
-//                } else if (password == passwordCheck) {
-//                    val loaderLayout = findViewById<RelativeLayout>(R.id.loaderLayout)
-//                    loaderLayout.visibility = View.VISIBLE
-//                    auth.createUserWithEmailAndPassword(email.toString(), password.toString())
-//                        .addOnCompleteListener(this) { task ->
-//                            if (task.isSuccessful) {
-//                                val user = Firebase.auth.currentUser
-//                                val userId = user?.uid
-//                                val userIdSt = userId.toString()
-//
-//                                FirebaseStorage.getInstance()
-//                                    .reference.child("userImages").child("$userIdSt/photo")
-//                                    .putFile(imageUri!!).addOnSuccessListener {
-//                                        var userProfile: Uri? = null
-//                                        FirebaseStorage.getInstance().reference.child("userImages")
-//                                            .child("$userIdSt/photo").downloadUrl
-//                                            .addOnSuccessListener {
-//                                                userProfile = it
-//                                                Log.d("이미지 URL", "$userProfile")
-//                                                val friend = Friend(
-//                                                    email.toString(),
-//                                                    name.toString(),
-//                                                    userProfile.toString(),
-//                                                    userIdSt
-//                                                )
-//                                                database.child("users").child(userId.toString())
-//                                                    .setValue(friend)
-//                                            }
-//                                    }
-//
-//                                Toast.makeText(
-//                                    this,
-//                                    "회원가입에 성공했습니다.", Toast.LENGTH_SHORT
-//                                ).show()
-//                                Log.e(TAG, "$userId")
-//                                myStartActivity(LoginActivity::class.java)
-//                            } else {
-//                                Toast.makeText(this, "등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//
-//                }
-//            }
-//        }
-//    }
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -239,4 +167,13 @@ class RegisterActivity : AppCompatActivity() {
     private fun getPasswordCheck(): String {
         return findViewById<EditText>(R.id.passwordCheckEditText).text.toString()
     }
+
+    private fun showProgress() {
+        findViewById<ProgressBar>(R.id.progressBar).isVisible = true
+    }
+
+    private fun hideProgress() {
+        findViewById<ProgressBar>(R.id.progressBar).isVisible = false
+    }
+
 }
